@@ -25,12 +25,12 @@ class pc(Resource):
 
     def post(self, userid):
         vector = request.data.decode("utf-8")
-        path_fichero = pc_directory + spacebar + userid
-        if os.path.exists(path_fichero):
+        path_file = pc_directory + spacebar + userid
+        if os.path.exists(path_file):
             append_write = 'a'  # append if already exists
         else:
             append_write = 'w'  # make a new file if not
-        file = open(path_fichero, append_write)
+        file = open(path_file, append_write)
         file.write(vector)
         file.close()
 
@@ -90,7 +90,7 @@ class errors(Resource):
         except:
             pass
     
-def lanzar_servidor_REST():
+def launch_REST_Server():
     if not os.path.exists(android_directory):
         os.makedirs(android_directory)
     if not os.path.exists(pc_directory):
@@ -107,4 +107,4 @@ def lanzar_servidor_REST():
 
 
 if __name__ == "__main__":
-    lanzar_servidor_REST()
+    launch_REST_Server()
