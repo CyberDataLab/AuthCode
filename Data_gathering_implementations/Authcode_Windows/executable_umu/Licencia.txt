@@ -1,0 +1,3 @@
+Authcode.
+Este programa recogerá estadísticas de uso de teclado, ratón y aplicaciones para generar un dataset que identifique al usuario.
+Los datos serán enviados a un servidor de la Universidad de Murcia donde serán almacenados.
