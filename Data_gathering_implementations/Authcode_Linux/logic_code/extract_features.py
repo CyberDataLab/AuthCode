@@ -203,16 +203,16 @@ def extract_features(file_path, file_apps, window):
     number_words = 0  # number of words in the current window
     list_length_words = []
     list_all_keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-                          'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '´',
-                          '`', "'", '"', 'ç', '^', 'º', '@', '$', '%', '&', '/', '(', ')', '=', '|', 'windowsizquierda',
-                          'crtl',
-                          'shift', 'bloqmayus', 'tab', 'º', 'ª', '\\', '#', 'esc', 'f1', 'f2', 'f3', 'f4', 'f5',
-                          'f6', 'f7', 'f8',
-                          'f9', 'f10', 'f11', 'f12', 'imppant', 'insert', 'supr', 'start', 'fin', 'repag', 'avpag',
-                          'numlock',
-                          '}', '{', '-', '_', '.', ',', '[', ']', '*', '<', '>', 'space', 'tab', 'enter', 'ctrlderecha',
-                          'rightshift', 'backspace', 'atlgr', 'alt', 'left', 'right', 'up', 'down', 'flechaderecha',
-                          'flechaizquierda', 'flechaarriba', 'flechaabajo', '+']
+                      'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '´',
+                      '`', "'", '"', 'ç', '^', 'º', '@', '$', '%', '&', '/', '(', ')', '=', '|', 'leftwindows',
+                      'crtl',
+                      'shift', 'capslock', 'tab', 'º', 'ª', '\\', '#', 'esc', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6',
+                      'f7', 'f8',
+                      'f9', 'f10', 'f11', 'f12', 'PrtSc', 'insert', 'delete', 'home', 'ind', 'pageup', 'pagedown',
+                      'numlock',
+                      '}', '{', '-', '_', '.', ',', '[', ']', '*', '<', '>', 'space', 'tab', 'inter', 'rightctrl',
+                      'rightshift', 'backspace', 'atlgr', 'alt', 'left', 'right', 'up', 'down', 'rightarrow',
+                      'leftarrow', 'uparrow', 'downarrow', '+']
 
     #open log file
     file = open(file_path, "r")
