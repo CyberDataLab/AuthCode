@@ -85,7 +85,7 @@ list_speeds_average_directions = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [
 
 
 header=""
-header+="Time_stamp,"
+header+="timestamp,"
 header+="keystroke_counter,"
 header+="erase_keys_counter,"
 header+="erase_keys_percentage,"
@@ -109,11 +109,11 @@ for v in intervals_press_release_per_key.keys():
 
 for v in digraph.keys():
     v=v.replace(",","comma")
-    header += "digraph_usage_"+str(v)+","
+    header += "digraph_counter_"+str(v)+","
 
 for v in digraph.keys():
     v=v.replace(",","comma")
-    header += "digraph_average_time"+str(v)+","
+    header += "digraph_average_time_"+str(v)+","
 
 for v in range(0,4):
     header += "click_speed_average_"+str(v)+","
