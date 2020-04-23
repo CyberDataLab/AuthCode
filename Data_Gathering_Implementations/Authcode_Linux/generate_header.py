@@ -1,3 +1,10 @@
+"""
+This script generates a txt file with the headers to be utilised in the CSV files of each user.
+
+Note that it includes a final label "USER" that should be added to each user data file in the server
+in order to have the same number of features on the header and on the user file.
+"""
+
 def word_histogram(list):
     histogram = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0}
     for n in list:
