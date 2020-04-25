@@ -91,8 +91,6 @@ class errors(Resource):
             pass
     
 def lanzar_servidor_REST():
-    if not os.path.exists(android_directory):
-        os.makedirs(android_directory)
     if not os.path.exists(pc_directory):
         os.makedirs(pc_directory)
     if not os.path.exists(users_directory):
