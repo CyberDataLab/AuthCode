@@ -25,6 +25,8 @@ class pc(Resource):
 
     def post(self, userid):
         vector = request.data.decode("utf-8")
+        vector = vector[:-1]
+        vector = vector +","+userid+"\n"
         path_file = pc_directory + spacebar + userid
         if os.path.exists(path_file):
             append_write = 'a'  # append if already exists
