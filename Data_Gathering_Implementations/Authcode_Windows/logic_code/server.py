@@ -6,20 +6,18 @@ from gevent.pywsgi import WSGIServer
 import os
 import platform
 
-spacebar=''
+bar=''
 if platform.system() == "Linux":
-    spacebar="/"
+    bar="/"
 elif platform.system() == "Windows":
-    spacebar='\\'
+    bar='\\'
 
 app = Flask(__name__)
 api = Api(app)
-android_directory = str(os.getcwd()) + spacebar+"android"
-pc_directory = str(os.getcwd()) + spacebar + "pc"
-users_directory = str(os.getcwd()) + spacebar + "users"
-error_directory=str(os.getcwd()) + spacebar + "errors"
+pc_directory = str(os.getcwd()) + bar + "pc"
+users_directory = str(os.getcwd()) + bar + "users"
+error_directory=str(os.getcwd()) + bar + "errors"
 window_pc=60
-window_android=60
 
 class pc(Resource):
 
@@ -27,12 +25,12 @@ class pc(Resource):
         vector = request.data.decode("utf-8")
         vector = vector[:-1]
         vector = vector +","+userid+"\n"
-        path_fichero = pc_directory + spacebar + userid
-        if os.path.exists(path_fichero):
+        file_path = pc_directory + bar + userid
+        if os.path.exists(file_path):
             append_write = 'a'  # append if already exists
         else:
             append_write = 'w'  # make a new file if not
-        file = open(path_fichero, append_write)
+        file = open(file_path, append_write)
         file.write(vector)
         file.close()
 
@@ -48,12 +46,12 @@ class users(Resource):
             credentials = info.split(':')
             id = credentials[0]
             passwd = credentials[1]
-            path_fichero = users_directory + spacebar + id
+            file_path = users_directory + bar + id
 
-            if not os.path.exists(path_fichero):
+            if not os.path.exists(file_path):
                 return 400
 
-            file = open(path_fichero, 'r')
+            file = open(file_path, 'r')
             passwd_stored = file.read()
             file.close()
 
@@ -70,10 +68,10 @@ class users(Resource):
             credentials = info.split(':')
             id = credentials[0]
             passwd = credentials[1]
-            path_fichero = users_directory + spacebar + id
-            if os.path.exists(path_fichero):
+            file_path = users_directory + bar + id
+            if os.path.exists(file_path):
                 return 400
-            file = open(path_fichero, 'w')
+            file = open(file_path, 'w')
             file.write(passwd)
             file.close()
             return 200
@@ -85,14 +83,14 @@ class errors(Resource):
     def post(self):
         try:
             info = request.data.decode("utf-8")
-            error_path=error_directory+spacebar+"errors"
+            error_path=error_directory+bar+"errors"
             file=open(error_path,'a')
             file.write(info)
             file.close()
         except:
             pass
     
-def lanzar_servidor_REST():
+def launch_REST_Server():
     if not os.path.exists(pc_directory):
         os.makedirs(pc_directory)
     if not os.path.exists(users_directory):
@@ -107,4 +105,4 @@ def lanzar_servidor_REST():
 
 
 if __name__ == "__main__":
-    lanzar_servidor_REST()
+    launch_REST_Server()
