@@ -43,7 +43,7 @@ def registrer(user, passwd):
 
 
 # Do login
-def login():
+def login_reg():
     try:
         if os.path.exists(path_idUser):
             try:
@@ -119,7 +119,7 @@ def login():
 if __name__ == '__main__':
     connected = 0
     while connected==0:
-        loginRes = login()
+        loginRes = login_reg()
         if loginRes == 200:
             print("Data collection service launched successfully.")
             connected = 1
