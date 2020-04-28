@@ -12,7 +12,7 @@ from logic_code.keyboard import *
 import notify2
 import sys
 
-# Lamba to obtain milisecond timemark
+# Lamba to obtain milisecond timestamp
 current_time = lambda: int(time.time() * 1000)
 
 # Generate work directory
@@ -56,7 +56,7 @@ def read_window_pids():
 #Obtain process pids using app name
 def find_pids_by_name(processName):
     pid_list = []
-    # Iterate over the all the running process
+    # Iterate over all running processes
     for proc in psutil.process_iter():
         try:
             pinfo = proc.as_dict(attrs=['pid', 'name', 'create_time'])
@@ -83,7 +83,6 @@ def print_pressed_keys(e):
             key=''.join(parts_text[i] for i in range(0,len(parts_text)-1))
             key=key.lower()
             press=parts_text[len(parts_text)-1]
-            #print(key,press)
             if press=='down':
                 file_logs.write(str(current_time()) + ",KP,{0},{1}\n".format(key, exeFirstPlane))
             elif press=='up':
@@ -334,6 +333,6 @@ def launch():
                 try:
                     os.system("notify-send 'Authcode: "+str(text_notification)+"'")
                 except Exception as e:
-                    print("DATOS ENVIADOS")
+                    print("BEHAVIOURAL DATA SENT")
 
         time.sleep(2)
