@@ -56,7 +56,7 @@ def average_dictionary_length(dictionary):
     return dictionary_result
 
 
-def cero_division(arg1, arg2):
+def zero_division(arg1, arg2):
     if arg1 == 0 or arg2 == 0:
         return 0
     return round(arg1 / arg2, 2)
@@ -218,9 +218,9 @@ def extract_features(file_path, file_apps, window):
     file = open(file_path, "r")
 
     #calculated features atributes
-    time_mark = 0
+    timestamp = 0
     last_key_pulsada = ''
-    time_mark_last_pulsacion = 0  # time mark of the last key pressed
+    timestamp_last_pulsacion = 0  # time mark of the last key pressed
     total_keys_pressed = 0  # number of keys pressed in the window of time
     total_keys_erase = 0  # number of keys of erase pressed
     keystrokes_per_key = {}  # number of keystrokes per key
@@ -229,10 +229,10 @@ def extract_features(file_path, file_apps, window):
     keys_pressed = []  # keys pressed
     interval_time_press_keys = []  # Intervals of time in order of key press
     list_intervals_press_release_key = []  # Intervals of press y release each key
-    marks_time_pressed = {}  # time mark cuando each letra ha sido pressed per last vez
+    timestamps_pressed = {}  # time mark cuando each letra ha sido pressed per last vez
     for t in list_all_keys:
-        marks_time_pressed[t] = 0
-    intervals_press_release_per_key = {}  # list of time of keystrokes of each key
+        timestamps_pressed[t] = 0
+    intervals_press_release_per_key = {}  # dictionary of keystroke times of each key
     for t in list_all_keys:
         intervals_press_release_per_key[t] = []
     interval_digraph = {}  # time between two keystrokes of all the keys
@@ -247,7 +247,7 @@ def extract_features(file_path, file_apps, window):
     """
     Mouse attributes
     """
-    marks_time_click = {0: 0, 1: 0, 3: 0}
+    timestamps_click = {0: 0, 1: 0, 3: 0}
     interval_time_click = {0: [], 1: [], 2: [], 3: []}
     list_position_mouse = []
     # Last position X
@@ -267,7 +267,7 @@ def extract_features(file_path, file_apps, window):
 
     #mouse auxiliar features
     last_action_mouse = ''
-    time_mark_movement = 0
+    timestamp_movement = 0
     interval_movement_click = []
     length_traveled = 0
 
@@ -279,7 +279,7 @@ def extract_features(file_path, file_apps, window):
 
     is_double_click = False
 
-    time_mark_first_movement = 0
+    timestamp_first_movement = 0
 
     previousDoubleClick = True
     """
@@ -303,34 +303,34 @@ def extract_features(file_path, file_apps, window):
     for line in file.readlines():
         line = line[:-1]  # delete end \n char
         parts = line.split(",")
-        time_mark = int(parts[0])
+        timestamp = int(parts[0])
         event = parts[1]
 
         if start_subwindow == 0:
-            start_subwindow = time_mark
+            start_subwindow = timestamp
 
-        if time_mark > start_subwindow + CONSTANT_SUBWINDOW:
+        if timestamp > start_subwindow + CONSTANT_SUBWINDOW:
             list_length_movement.append(int(movement_length(length_traveled)))
             angle_direction = int(obtain_direction_angle(mark_x, mark_y, mark_x_angle, mark_y_angle))
             list_directions_movement.append(angle_direction)
-            if (int(time_mark_movement) - int(time_mark_first_movement)) != 0:
-                list_speeds_average.append(length_traveled / (int(time_mark_movement)
-                                                                      - int(time_mark_first_movement)))
+            if (int(timestamp_movement) - int(timestamp_first_movement)) != 0:
+                list_speeds_average.append(length_traveled / (int(timestamp_movement)
+                                                                      - int(timestamp_first_movement)))
                 list_speeds_average_directions[angle_direction].append(length_traveled /
-                                                                              (int(time_mark_movement)
-                                                                               - int(time_mark_first_movement)))
+                                                                              (int(timestamp_movement)
+                                                                               - int(timestamp_first_movement)))
             length_traveled = 0
-            time_mark_first_movement = 0
-            start_subwindow = time_mark
+            timestamp_first_movement = 0
+            start_subwindow = timestamp
 
-        # event gestion
+        # event management
         if event == "KP":
             events_keyboard = events_keyboard + 1
             key = parts[2]
             key = key.replace('\'', '')
             key = check_linux(key)
             if key in list_all_keys:
-                if marks_time_pressed[key] == 0:
+                if timestamps_pressed[key] == 0:
                     # increment counters
                     total_keys_pressed = total_keys_pressed + 1
                     if key == 'backspace' or key == 'supr':
@@ -340,17 +340,17 @@ def extract_features(file_path, file_apps, window):
                     # Include key pressed to the list
                     keys_pressed.append(key)
 
-                    # Include marks of time of press
-                    marks_time_pressed[key] = time_mark
-                    if time_mark_last_pulsacion != 0:
-                        interval_time_press_keys.append(time_mark - time_mark_last_pulsacion)
+                    # Include keystroke timestamps
+                    timestamps_pressed[key] = timestamp
+                    if timestamp_last_pulsacion != 0:
+                        interval_time_press_keys.append(timestamp - timestamp_last_pulsacion)
                         interval_digraph[key + last_key_pulsada].append(
-                            time_mark - time_mark_last_pulsacion)
+                            timestamp - timestamp_last_pulsacion)
                         digraph[key + last_key_pulsada] = digraph[key + last_key_pulsada] + 1
 
                     # Restart variables of last key pressed
                     last_key_pulsada = key
-                    time_mark_last_pulsacion = time_mark
+                    timestamp_last_pulsacion = timestamp
 
                     if key in list_chars:
                         length_word = length_word + 1
@@ -367,24 +367,24 @@ def extract_features(file_path, file_apps, window):
             key = parts[2]
             key = key.replace('\'', '')
             if key in list_all_keys:
-                if marks_time_pressed[key] != 0:
-                    list_intervals_press_release_key.append(time_mark - marks_time_pressed[key])
-                    intervals_press_release_per_key[key].append(time_mark - marks_time_pressed[key])
-                    marks_time_pressed[key] = 0
+                if timestamps_pressed[key] != 0:
+                    list_intervals_press_release_key.append(timestamp - timestamps_pressed[key])
+                    intervals_press_release_per_key[key].append(timestamp - timestamps_pressed[key])
+                    timestamps_pressed[key] = 0
 
 
         elif event == "MM":
             events_mouse = events_mouse + 1
-            time_mark_movement = time_mark
+            timestamp_movement = timestamp
             last_action_mouse = "MM"
             list_position_mouse.append(get_screen_quadrant(parts[2], parts[3]))
 
-            if (start_subwindow == time_mark):
+            if (start_subwindow == timestamp):
                 mark_x_angle = int(parts[2])
                 mark_y_angle = int(parts[3])
 
-            if time_mark_first_movement == 0:
-                time_mark_first_movement = time_mark
+            if timestamp_first_movement == 0:
+                timestamp_first_movement = timestamp
 
             if drag:
                 list_actions_mouse[5] += 1
@@ -414,21 +414,21 @@ def extract_features(file_path, file_apps, window):
             press = str(parts[5])
 
             if last_action_mouse == "MM":
-                interval_movement_click.append(time_mark - time_mark_movement)
+                interval_movement_click.append(timestamp - timestamp_movement)
 
             if button == "Button.left":
                 if press == "False":
                     if not is_double_click:
-                        interval_time_click[0].append(time_mark - marks_time_click[0])
+                        interval_time_click[0].append(timestamp - timestamps_click[0])
                         drag = False
                     else:
-                        interval_time_click[2].append(time_mark - marks_time_click[0])
+                        interval_time_click[2].append(timestamp - timestamps_click[0])
                         if len(interval_time_click[0]) != 0:
                             interval_time_click[0].pop()
                 else:
-                    if previousDoubleClick or marks_time_click[0] + CONSTANT_DOUBLE_CLICK < time_mark:
+                    if previousDoubleClick or timestamps_click[0] + CONSTANT_DOUBLE_CLICK < timestamp:
                         list_actions_mouse[0] += 1
-                        marks_time_click[0] = time_mark
+                        timestamps_click[0] = timestamp
                         is_double_click = False
                         previousDoubleClick = False
                         drag = True
@@ -436,23 +436,23 @@ def extract_features(file_path, file_apps, window):
                         list_actions_mouse[2] += 1
                         if (list_actions_mouse[0] > 0):
                             list_actions_mouse[0] -= 1
-                        marks_time_click[0] = time_mark
+                        timestamps_click[0] = timestamp
                         is_double_click = True
                         previousDoubleClick = True
             elif button == "Button.right":
                 if press == "False":
-                    if marks_time_click[1] != 0:
-                        interval_time_click[1].append(time_mark - marks_time_click[1])
+                    if timestamps_click[1] != 0:
+                        interval_time_click[1].append(timestamp - timestamps_click[1])
                 else:
                     list_actions_mouse[1] += 1
-                    marks_time_click[1] = time_mark
+                    timestamps_click[1] = timestamp
             elif button == "Button.middle":
                 if press == "True":
-                    marks_time_click[3] = time_mark
+                    timestamps_click[3] = timestamp
                     list_actions_mouse[6] += 1
                 else:
-                    if marks_time_click[3] != 0:
-                        interval_time_click[3].append(time_mark - marks_time_click[3])
+                    if timestamps_click[3] != 0:
+                        interval_time_click[3].append(timestamp - timestamps_click[3])
             last_action_mouse = "MC"
 
     file.close()
@@ -462,7 +462,7 @@ def extract_features(file_path, file_apps, window):
     for line in file.readlines():
         line = line[:-1]  # delete jump \n key
         parts = line.split(",")
-        time_mark = int(parts[0])
+        timestamp = int(parts[0])
         event = parts[1]
         if event == "APPS":
             number_apps = int(parts[2])
@@ -497,11 +497,11 @@ def extract_features(file_path, file_apps, window):
                 if name_process_current not in time_first_plane_in_window.keys():
                     time_first_plane_in_window[name_process_current] = 0
                 if mark_last_app != 0:
-                    time_first_plane_in_window[last_app] += time_mark - mark_last_app
+                    time_first_plane_in_window[last_app] += timestamp - mark_last_app
                 last_app = name_process_current
-                mark_last_app = time_mark
-    if not (last_app == '' or time_mark == 0 or mark_last_app == 0):
-        time_first_plane_in_window[last_app] += time_mark - mark_last_app
+                mark_last_app = timestamp
+    if not (last_app == '' or timestamp == 0 or mark_last_app == 0):
+        time_first_plane_in_window[last_app] += timestamp - mark_last_app
     file.close()
 
     # Save last word
@@ -511,11 +511,11 @@ def extract_features(file_path, file_apps, window):
 
     #SAVE VECTOR AND SEND IT TO THE SERVER
     current_time = lambda: int(time.time() * 1000)
-    time_mark= current_time() 
+    timestamp= current_time() 
 
     #Keyboard vector part generation
-    vector = str(time_mark) + "," + str(total_keys_pressed) + "," + str(total_keys_erase) + "," + str(
-        cero_division(total_keys_erase, total_keys_pressed)) + "," + str(
+    vector = str(timestamp) + "," + str(total_keys_pressed) + "," + str(total_keys_erase) + "," + str(
+        zero_division(total_keys_erase, total_keys_pressed)) + "," + str(
         average(interval_time_press_keys)) + "," + str(
         dev(interval_time_press_keys)) + "," + str(
         average(list_intervals_press_release_key)) + "," + str(
