@@ -59,7 +59,7 @@ def foreach_window(hwnd, lParam):
 
 def find_pids_by_name(processName):
     pid_list = []
-    # Iterate over the all the running process
+    # Iterate over all running process
     for proc in psutil.process_iter():
         try:
             pinfo = proc.as_dict(attrs=['pid', 'name', 'create_time'])
@@ -107,18 +107,17 @@ def print_pressed_keys(e):
     try:
         pid = win32process.GetWindowThreadProcessId(GetForegroundWindow())
         if (pid[-1] > 0):
-            exePrimerPlano = psutil.Process(pid[-1]).name()
-            texto_evento=str(e)
-            texto_evento=texto_evento[14:-1]
-            partes_texto=texto_evento.split(' ')
-            key=''.join(partes_texto[i] for i in range(0,len(partes_texto)-1))
+            foreground_exec = psutil.Process(pid[-1]).name()
+            text_event=str(e)
+            text_event=text_event[14:-1]
+            text_parts=text_event.split(' ')
+            key=''.join(text_parts[i] for i in range(0,len(text_parts)-1))
             key=key.lower()
-            press=partes_texto[len(partes_texto)-1]
-            #print(key,press)
+            press=text_parts[len(text_parts)-1]
             if press=='down':
-                file_logs.write(str(current_time()) + ",KP,{0},{1}\n".format(key, exePrimerPlano))
+                file_logs.write(str(current_time()) + ",KP,{0},{1}\n".format(key, foreground_exec))
             elif press=='up':
-                file_logs.write(str(current_time()) + ",KR,{0},{1}\n".format(key, exePrimerPlano))
+                file_logs.write(str(current_time()) + ",KR,{0},{1}\n".format(key, foreground_exec))
     except:
         pass
 
@@ -127,8 +126,8 @@ def on_move(x, y):
     try:
         pid = win32process.GetWindowThreadProcessId(GetForegroundWindow())
         if (pid[-1] > 0):
-            exePrimerPlano = psutil.Process(pid[-1]).name()
-            file_logs.write(str(current_time()) + ",MM,{0},{1},{2}\n".format(x, y, exePrimerPlano))
+            foreground_exec = psutil.Process(pid[-1]).name()
+            file_logs.write(str(current_time()) + ",MM,{0},{1},{2}\n".format(x, y, foreground_exec))
     except:
         pass
         # file_logs.write(str(current_time()) + ",MM,{0},{1},{2}\n".format(x, y, "-"))
@@ -137,9 +136,9 @@ def on_move(x, y):
 def on_click(x, y, button, pressed):
     try:
         pid = win32process.GetWindowThreadProcessId(GetForegroundWindow())
-        exePrimerPlano = psutil.Process(pid[-1]).name()
+        foreground_exec = psutil.Process(pid[-1]).name()
         file_logs.write(
-            str(current_time()) + ",MC,{0},{1},{2},{3},{4}\n".format(x, y, button, pressed, exePrimerPlano))
+            str(current_time()) + ",MC,{0},{1},{2},{3},{4}\n".format(x, y, button, pressed, foreground_exec))
     except:
         pass
         # file_logs.write(str(current_time()) + ",MC,{0},{1},{2},{3},{4}\n".format(x, y, button, pressed, "-"))
@@ -149,8 +148,8 @@ def on_scroll(x, y, dx, dy):
     try:
         pid = win32process.GetWindowThreadProcessId(GetForegroundWindow())
         if (pid[-1] > 0):
-            exePrimerPlano = psutil.Process(pid[-1]).name()
-            file_logs.write(str(current_time()) + ",MS,{0},{1},{2},{3},{4}\n".format(x, y, dx, dy, exePrimerPlano))
+            foreground_exec = psutil.Process(pid[-1]).name()
+            file_logs.write(str(current_time()) + ",MS,{0},{1},{2},{3},{4}\n".format(x, y, dx, dy, foreground_exec))
     except:
         pass
         # file_logs.write(str(current_time()) + ",MS,{0},{1},{2},{3},{4}\n".format(x, y, dx, dy, "-"))
@@ -188,7 +187,7 @@ def launch():
     if not ListenerMouse.is_alive():
         ListenerMouse.start()
     
-    mark_time = current_time()
+    timestamp = current_time()
     # Read window. If no window size is saved, the default value is 60
     window = 60
     total_bytes_sent = 0
@@ -268,9 +267,9 @@ def launch():
         pids = []
 
         # Check if the time window is over
-        if mark_time + window * 1000 < current_time():
+        if timestamp + window * 1000 < current_time():
             # Update timestamp
-            mark_time = current_time()
+            timestamp = current_time()
 
             # Close log file and call the function responsible of generating and sending the vector to the server
             # The server answers with the new time window duration in seconds
