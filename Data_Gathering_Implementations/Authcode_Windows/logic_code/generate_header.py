@@ -1,3 +1,10 @@
+"""
+This script generates a txt file with the headers to be utilised in the CSV files of each user.
+
+Note that it includes a final label "USER" that should be added to each user data file in the server
+in order to have the same number of features on the header and on the user file.
+"""
+
 def word_histogram(list):
     histogram = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0}
     for n in list:
@@ -12,16 +19,6 @@ def position_histogram(list):
     for n in list:
         histogram[n] += 1
     return histogram
-def mean(list):
-    if len(list) == 0:
-        return 0
-    return round(sum(list) / len(list), 2)
-
-def average_dictionaty_list(dictionary):
-    output_dictionary = {}
-    for k in dictionary.keys():
-        output_dictionary[k] = mean(dictionary[k])
-    return output_dictionary
 
 def direction_histogram(list):
     histogram = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0}
@@ -50,15 +47,10 @@ list_all_keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c'
                       'rightshift', 'backspace', 'atlgr', 'alt', 'left', 'right', 'up', 'down', 'rightarrow',
                       'leftarrow', 'uparrow', 'downarrow', '+']
 
-presses_per_key = {}
+keystrokes_per_key = {}
 for t in list_all_keys:
-    presses_per_key[t] = 0
-keys_presionadas = []
-interval_time_presionar_keys = []
+    keystrokes_per_key[t] = 0
 list_intervals_press_release_key = []
-marks_time_presionado = {}
-for t in list_all_keys:
-    marks_time_presionado[t] = 0
 intervals_press_release_per_key = {}
 for t in list_all_keys:
     intervals_press_release_per_key[t] = []
@@ -76,7 +68,7 @@ MOUSE VARIABLES
 """
 marks_time_click = {0: 0, 1: 0, 3: 0}
 interval_time_click = {0: [], 1: [], 2: [], 3: []}
-list_posicion_mouse = []
+list_position_mouse = []
 list_directions_movement = []
 list_actions_mouse = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
 interval_movement_click = []
@@ -99,7 +91,7 @@ header+="word_stddev_length,"
 for v in word_histogram(list_length_words).keys():
     header+="word_length_"+str(v)+","
 
-for v in presses_per_key.keys():
+for v in keystrokes_per_key.keys():
     v=v.replace(",","comma")
     header += "keystrokes_key_"+str(v)+","
 
@@ -124,7 +116,7 @@ for v in range(0,4):
 for v in list_actions_mouse.keys():
     header+="mouse_action_counter_"+str(v)+","
 
-for v in position_histogram(list_posicion_mouse).keys():
+for v in position_histogram(list_position_mouse).keys():
     header+="mouse_position_histogram_"+str(v)+","
 
 for v in direction_histogram(list_directions_movement).keys():
