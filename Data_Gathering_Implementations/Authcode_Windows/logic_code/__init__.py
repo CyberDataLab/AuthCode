@@ -2,7 +2,8 @@ import time
 from winreg import SetValueEx, OpenKey, HKEY_CURRENT_USER, KEY_ALL_ACCESS, REG_SZ, CloseKey
 import os
 import hashlib
-
+import win32console
+import win32gui
 from win32con import SW_SHOW
 
 from logic_code import extract_features, logger
@@ -28,11 +29,11 @@ def generate_hash_passwd(passwd):
 # Register user
 def registrer(user, passwd):
     try:
-        response = requests.post(urlServer + "/user", data=str(user + ':' + passwd).encode("utf-8"))
+        response = requests.post(urlServer + "/user", data=(user + ':' + passwd).encode("utf-8"))
         response = int(response.text)
         if response == 200:
             print("User correctly registered")
-            file = open(path_idUser, 'w')
+            file = open(path_idUser, 'w') #WARNING: User and SHA1 pass are stored in cleartext
             file.write(user + ':' + passwd)
             file.close()
             return 200
@@ -44,7 +45,7 @@ def registrer(user, passwd):
 
 
 # Do login
-def login():
+def login_reg():
     try:
         if os.path.exists(path_idUser):
             try:
@@ -53,7 +54,7 @@ def login():
                 user = partesCredenciales[0]
                 passwd = partesCredenciales[1]
                 fichId.close()
-                response = requests.get(urlServer + "/user", data=str(user + ':' + passwd).encode("utf-8"))
+                response = requests.get(urlServer + "/user", data=(user + ':' + passwd).encode("utf-8"))
                 response = int(response.text)
                 if response != 200:
                     print("Login could not be done using stored credentials.")
@@ -84,14 +85,14 @@ def login():
             response = 0
             if option == 1:
                 try:
-                    response = requests.get(urlServer + "/user", data=str(user + ':' + passwd).encode("utf-8"))
+                    response = requests.get(urlServer + "/user", data=(user + ':' + passwd).encode("utf-8"))
                     response = int(response.text)
                     if response != 200:
                         option = 0
                         print("Incorrect username or password.")
                     else:
                         file = open(path_idUser, 'w')
-                        file.write(user + ':' + passwd)
+                        file.write(user + ':' + passwd) #WARNING: User and SHA1 pass are stored in cleartext
                         file.close()
                         print("Successful login.")
                         return 200
@@ -105,7 +106,7 @@ def login():
                     option = 0
                     print("Username not available, try a new one or do login.")
                 elif response == 200:
-                    response = requests.get(urlServer + "/user", data=str(user + ':' + passwd).encode("utf-8"))
+                    response = requests.get(urlServer + "/user", data=(user + ':' + passwd).encode("utf-8"))
                     response = int(response.text)
                     if response == 200:
                         print("Successful login.")
@@ -118,7 +119,7 @@ def login():
         return 500
 
 
-# Add .py scriot to the app registry, so the app is launched at windows start
+# Add .py script to the app registry, so the app is launched at windows start
 def addStartup():
     new_file_path = str(os.getcwd()) + "\\logger.exe"
     keyVal = r'Software\Microsoft\Windows\CurrentVersion\Run'
@@ -129,15 +130,11 @@ def addStartup():
 
 # Hide terminal
 def hide():
-    import win32console
-    import win32gui
     win = win32console.GetConsoleWindow()
     win32gui.ShowWindow(win, 0)
 
 # Show terminal
 def show():
-    import win32console
-    import win32gui
     win = win32console.GetConsoleWindow()
     win32gui.ShowWindow(win, SW_SHOW)
 
@@ -147,14 +144,18 @@ if __name__ == '__main__':
         if os.path.exists(path):
             if os.path.exists(path_idUser):
                 os.remove(path_idUser)
-            if os.path.exists(path+"\\ventana"):
-                os.remove(path+"\\ventana")
+            if os.path.exists(path+"\\window"):
+                os.remove(path+"\\window")
 
     connected = 0
-    loginRes = login()
-    if loginRes == 200:
-        print("Data collection service launched successfully.")
-        connected = 1
+    while connected==0:
+        loginRes = login_reg()
+        if loginRes == 200:
+            print("Data collection service launched successfully.")
+            connected = 1
+        if connected==0:
+            time.sleep(60)
+    time.sleep(2)
 
     print("This window will be closed in two seconds.")
     time.sleep(2)
@@ -163,7 +164,7 @@ if __name__ == '__main__':
         while connected==0:
             time.sleep(300)
             show()
-            loginRes = login()
+            loginRes = login_reg()
             if loginRes == 200:
                 print("Data collection service launched successfully.")
                 connected = 1
@@ -195,10 +196,10 @@ if __name__ == '__main__':
                     os.remove(path_apps)
                 except:
                     pass
-            path_ventana = path_logs + "\\ventana"
-            if os.path.exists(path_ventana):
+            path_window = path_logs + "\\window"
+            if os.path.exists(path_window):
                 try:
-                    os.remove(path_ventana)
+                    os.remove(path_window)
                 except:
                     pass
             text=str(e)+"\n"
